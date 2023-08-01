@@ -9,10 +9,10 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.logicea</groupId>
-	<artifactId>cards</artifactId>
+	<artifactId>cards-api</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>Cards Demo</name>
-	<description>Demo project Logicea Interview</description>
+	<description>Cards Api Assignment</description>
 	<properties>
 		<java.version>17</java.version>
 	</properties>

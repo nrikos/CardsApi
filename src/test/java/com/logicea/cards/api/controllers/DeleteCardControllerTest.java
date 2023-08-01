@@ -29,4 +29,35 @@ public class DeleteCardControllerTest extends CardsControllerBaseTest{
                 .andDo(print())
                 .andReturn();
     }
+
+    @Test
+    public void deleteCardAdminRoleTest() throws Exception {
+        CardDTO card = CardDTO.builder().name("Test card").color("#RR1234").build();
+        CardDTO savedCard = performValidCreateCardRequest(card, johnToken);
+
+        String janeToken = authenticateUser("jane.doe@yahoo.com", "password");
+        mockMvc.perform(delete("/api/cards/{cardId}", String.valueOf(savedCard.getCardId()))
+                        .header("Authorization", String.format("Bearer %s", janeToken))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is2xxSuccessful());
+
+    }
+
+    @Test
+    public void deleteCardInvalidOwnershipTest() throws Exception {
+        CardDTO card = CardDTO.builder().name("Test card").color("#RR1234").build();
+        CardDTO savedCard = performValidCreateCardRequest(card, johnToken);
+
+        String mikeToken = authenticateUser("mike.doe@yahoo.com", "password");
+        mockMvc.perform(delete("/api/cards/{cardId}", String.valueOf(savedCard.getCardId()))
+                        .header("Authorization", String.format("Bearer %s", mikeToken))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andDo(print())
+                .andExpect(status().is4xxClientError())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(content().json("""
+                            {"errorCode":"CARDS-E-004","error":"Card does not belong to user"}"""));
+
+    }
 }
